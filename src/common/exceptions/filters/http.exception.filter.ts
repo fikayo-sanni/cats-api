@@ -1,14 +1,16 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { HttpResponse } from 'src/common/utils/http.utils';
+import { HttpResponse } from 'src/common/utils/http.util';
 import { BaseAppException } from '../handlers/base.exception.handler';
 import { ModuleRef } from '@nestjs/core';
 import { ValidationAppException } from '../handlers/validation.exception.handler';
 import { get, isObject, isString, omit } from 'lodash';
+import { AppLogger } from 'src/common/utils/logger.util';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(
     private moduleRef: ModuleRef,
+    private readonly appLogger: AppLogger
   ) {}
 
   async catch(exception: Error, host: ArgumentsHost) {
@@ -41,6 +43,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         }
       }
 
+      this.appLogger.logError(exception)
       return httpResponse.sendException(
         exception,
         request,
@@ -48,6 +51,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         isObject(exceptionResponse) ? omit(exceptionResponse, ['message']) : {},
       );
     } else {
+      this.appLogger.logError(exception);
       return httpResponse.sendNotHandledException(exception, request, response);
     }
   }
