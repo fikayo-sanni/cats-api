@@ -12,6 +12,10 @@ const getAppConfig = () => {
     PORT: parseInt(String(processEnvObj.PORT), 10) || 5011,
     JWT_SECRET: String(processEnvObj.JWT_SECRET),
     JWT_REFRESH_SECRET: String(processEnvObj.JWT_REFRESH_SECRET),
+    DB_USERNAME: String(processEnvObj.DB_USERNAME),
+    DB_PASSWORD: String(processEnvObj.DB_PASSWORD),
+    DB_NAME: String(processEnvObj.DB_NAME),
+    DB_HOST: String(processEnvObj.DB_HOST),
   };
 };
 
