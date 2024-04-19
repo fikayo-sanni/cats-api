@@ -7,7 +7,7 @@ import { CreateCatDto } from '../dto/create-cat.dto';
 import { Cat } from '../interfaces/cat.interface';
 
 @UseGuards(RolesGuard)
-@Controller('cats')
+@Controller('api/v1/cats')
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
