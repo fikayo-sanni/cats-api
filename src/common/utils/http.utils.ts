@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable, Scope } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { ResponseStatusCodeConst } from '../../constants/ResponseStatusCodes';
-import { BaseAppException } from '../exceptions/handlers/base.exception.handler';
+import { StatusCodes } from '../exceptions/constants/status-codes.contants';
+import { BaseAppException } from '../exceptions';
 import { Request, Response } from 'express';
-import appConfig from '../../config/envs/app.config';
+import appConfig from '../config/envs/app.config';
 import { get } from 'lodash';
-import { ForbiddenAppException } from '../exceptions/handlers/ForbiddenAppException';
+import { ForbiddenAppException } from '../exceptions/handlers/forbidden.exception.handler';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class HttpResponse {
@@ -14,7 +14,7 @@ export class HttpResponse {
 
   //Vars
   private serverCode: HttpStatus = HttpStatus.OK;
-  private statusCode = ResponseStatusCodeConst.SUCCESS;
+  private statusCode = StatusCodes.SUCCESS;
   private message = '';
   private devMessage = '';
   private data: unknown = null;
@@ -56,7 +56,7 @@ export class HttpResponse {
     return this;
   }
 
-  setStatusCode(statusCode: ResponseStatusCodeConst) {
+  setStatusCode(statusCode: StatusCodes) {
     this.statusCode = statusCode;
     return this;
   }
@@ -134,11 +134,11 @@ export class HttpResponse {
       ) as HttpStatus) || HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (statusCode === HttpStatus.TOO_MANY_REQUESTS) {
-      response['statusCode'] = ResponseStatusCodeConst.TOO_MANY_REQUESTS;
+      response['statusCode'] = StatusCodes.TOO_MANY_REQUESTS;
     } else if (statusCode == HttpStatus.NOT_FOUND) {
-      response['statusCode'] = ResponseStatusCodeConst.PAGE_NOT_FOUND;
+      response['statusCode'] = StatusCodes.PAGE_NOT_FOUND;
     } else {
-      response['statusCode'] = ResponseStatusCodeConst.SERVER_ERROR;
+      response['statusCode'] = StatusCodes.SERVER_ERROR;
     }
     return res.status(statusCode).send(response);
   }
