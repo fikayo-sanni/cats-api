@@ -5,11 +5,14 @@ import { ParseIntPipe } from '../../../../../common/pipes/parse-int.pipe';
 import { CatsService } from '../services/cats.service';
 import { CreateCatDto } from '../dto/create-cat.dto';
 import { Cat } from '../interfaces/cat.interface';
+import { BaseAppController } from 'src/http/api/base/base.controller';
 
 @UseGuards(RolesGuard)
 @Controller('api/v1/cats')
-export class CatsController {
-  constructor(private readonly catsService: CatsService) {}
+export class CatsController extends BaseAppController {
+  constructor(private readonly catsService: CatsService) {
+    super();
+  }
 
   @Post()
   @Roles(['admin'])
