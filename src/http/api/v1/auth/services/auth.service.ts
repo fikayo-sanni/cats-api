@@ -27,7 +27,7 @@ export class AuthService {
 
     async login(loginAuthDto: LoginAuthDto): Promise<IUser> {
         try {
-            // has user password
+            // hash user password
             Object.assign(loginAuthDto, { password: hashString(loginAuthDto.password) });
 
             const user = await this.userService.findByParams(loginAuthDto);
