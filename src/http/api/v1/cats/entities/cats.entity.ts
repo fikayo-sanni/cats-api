@@ -1,6 +1,7 @@
 import { AppEntity } from 'src/app.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/users.entity';
+import { Favorite } from '../../favorites/entities/favorites.entity';
 
 @Entity()
 export class Cat extends AppEntity {
@@ -20,5 +21,8 @@ export class Cat extends AppEntity {
   @ManyToOne(() => User )
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => Favorite, favorite => favorite.cat)
+  favorite: Favorite[];
   
 }
