@@ -32,7 +32,7 @@ export class AuthService {
 
             const user = await this.userService.findByParams(loginAuthDto);
 
-            const tokens = await this.getTokens(user.id, user.role);
+            const tokens = await this.getTokens(user.id, user.roles);
 
             delete user.password;
 
@@ -63,13 +63,13 @@ export class AuthService {
         }
     }
 
-    async getTokens(id: number, role: UserRole) {
+    async getTokens(id: number, roles: Array<UserRole>) {
         // generate 7h access token and 7d refresh token
         const [access_token, refresh_token] = await Promise.all([
             this.jwtService.signAsync(
                 {
                     sub: id,
-                    role
+                    roles
                 },
                 {
                     secret: this.appConfig.JWT_SECRET,
@@ -79,7 +79,7 @@ export class AuthService {
             this.jwtService.signAsync(
                 {
                     sub: id,
-                    role,
+                    roles,
                 },
                 {
                     secret: this.appConfig.JWT_REFRESH_SECRET,

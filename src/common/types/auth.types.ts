@@ -7,5 +7,5 @@ export interface AuthRequest extends Request {
 
 export interface JwtPayload {
   sub: string;
-  role: UserRole;
+  roles: Array<UserRole>;
 }

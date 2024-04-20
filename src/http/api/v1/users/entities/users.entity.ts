@@ -29,9 +29,9 @@ export class User extends AppEntity {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.USER,
+    default: [UserRole.USER],
   })
-  role: UserRole;
+  roles: UserRole[];
 
   @OneToMany(() => Cat, cat => cat.user)
   cats: Cat[];
