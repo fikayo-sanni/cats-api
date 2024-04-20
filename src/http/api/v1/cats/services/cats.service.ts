@@ -31,26 +31,26 @@ export class CatsService {
 
   async findOne(id: number): Promise<Cat> {
     return this.catRepository.findOne({ where: { id } })
-}
+  }
 
-async findByParams(params: Partial<CreateCatDto>): Promise<Cat> {
-    return this.catRepository.findOne({where: params});
-}
+  async findByParams(params: Partial<CreateCatDto>): Promise<Cat> {
+    return this.catRepository.findOne({ where: params });
+  }
 
-async update(id: number, updateCatDto: UpdateCatDto): Promise<void> {
+  async update(id: number, updateCatDto: UpdateCatDto): Promise<void> {
     const user = await this.findOne(id);
     if (!user) {
-        throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
     }
 
     await this.catRepository.update(id, updateCatDto);
-}
+  }
 
-async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<void> {
     const cat = await this.findOne(id);
     if (!cat) {
-        throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
     }
     await this.catRepository.remove(cat);
-}
+  }
 }

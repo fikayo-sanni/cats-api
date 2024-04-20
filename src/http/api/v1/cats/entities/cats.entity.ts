@@ -1,5 +1,6 @@
 import { AppEntity } from 'src/app.entity';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../../users/entities/users.entity';
 
 @Entity()
 export class Cat extends AppEntity {
@@ -12,5 +13,12 @@ export class Cat extends AppEntity {
 
   @Column()
   breed: string;
+
+  @Column()
+  user_id: number;
+
+  @ManyToOne(() => User )
+  @JoinColumn({ name: 'user_id' })
+  user: User;
   
 }
