@@ -3,13 +3,13 @@ import appConfiguration from 'src/common/config/envs/app.config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from "../../users/services/users.service";
 import { LoginAuthDto } from "../dto/auth.login.dto";
-import { User } from "../../users/entities/users.entity";
 import { CreateUserDto } from "../../users/dto/user.create.dto";
 import { ConfigType } from "@nestjs/config";
 import { AppLogger } from "src/common/utils/logger.util";
 import { hashString } from "src/common/utils/hash.util";
 import { BadRequestAppException } from "src/common/exceptions";
 import { ResponseMessages } from "src/common/exceptions/constants/messages.constants";
+import { IUser } from "../../users/interfaces/users.interface";
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
         this.appConfig = appConfiguration();
     }
 
-    async login(loginAuthDto: LoginAuthDto): Promise<User> {
+    async login(loginAuthDto: LoginAuthDto): Promise<IUser> {
         try {
             // has user password
             Object.assign(loginAuthDto, { password: hashString(loginAuthDto.password) });
@@ -42,7 +42,7 @@ export class AuthService {
         }
     }
 
-    async register(createUserDto: CreateUserDto): Promise<User> {
+    async register(createUserDto: CreateUserDto): Promise<IUser> {
         try {
 
             const exists = await this.userService.findByParams({ email: createUserDto.email });
@@ -51,7 +51,7 @@ export class AuthService {
                 throw new BadRequestAppException(ResponseMessages.CREDENTIALS_IN_USE);
             }
 
-            // has user password
+            // hash user password
             Object.assign(createUserDto, { password: hashString(createUserDto.password) });
             const user = await this.userService.create(createUserDto);
 

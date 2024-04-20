@@ -10,9 +10,9 @@ import {
     id: number;
   
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
   
     @UpdateDateColumn()
-    updateAt: Date;
+    update_at: Date;
   }
   
