@@ -2,7 +2,7 @@ import { AppEntity } from 'src/app.entity';
 import { Entity, Column } from 'typeorm';
 
 @Entity()
-export class Cats extends AppEntity {
+export class Cat extends AppEntity {
   
   @Column()
   name: string;
