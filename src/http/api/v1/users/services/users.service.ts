@@ -5,7 +5,7 @@ import { UpdateUserDto } from "../dto/user.update.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { IPaginationOptions, IPaginationResult } from "src/common/interfaces/pagination.interface";
-import { Messages, ResponseMessages } from "src/common/exceptions/constants/messages.constants";
+import { ResponseMessages } from "src/common/exceptions/constants/messages.constants";
 import { NotFoundAppException } from "src/common/exceptions";
 
 @Injectable()
@@ -31,6 +31,10 @@ export class UsersService {
 
     async findOne(id: number): Promise<User> {
         return this.userRepository.findOne({ where: { id } })
+    }
+
+    async findByParams(params: Partial<CreateUserDto>): Promise<User> {
+        return this.userRepository.findOne({where: params});
     }
 
     async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
