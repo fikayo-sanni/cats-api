@@ -27,8 +27,7 @@ export class User extends AppEntity {
   refresh_token: string;
 
   @Column({
-    type: 'enum',
-    enum: UserRole,
+    type: 'simple-array',
     default: [UserRole.USER],
   })
   roles: UserRole[];
