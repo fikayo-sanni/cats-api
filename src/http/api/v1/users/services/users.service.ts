@@ -4,6 +4,9 @@ import { User } from "../entities/users.entity";
 import { UpdateUserDto } from "../dto/user.update.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { IPaginationOptions, IPaginationResult } from "src/common/interfaces/pagination.interface";
+import { Messages, ResponseMessages } from "src/common/exceptions/constants/messages.constants";
+import { NotFoundAppException } from "src/common/exceptions";
 
 @Injectable()
 export class UsersService {
@@ -18,19 +21,32 @@ export class UsersService {
         return this.userRepository.save(user);
     }
 
-    async findAll(params: PaginationOptions): Promise<User> {
-        return this.userRepository.find()
+    async findAll(params: IPaginationOptions): Promise<IPaginationResult<User>> {
+        const items = await this.userRepository.find(params)
+
+        const count = await this.userRepository.count();
+
+        return { items, count }
     }
 
-    async findOne(id: number) {
-        return User.findOne({ where: { id } })
+    async findOne(id: number): Promise<User> {
+        return this.userRepository.findOne({ where: { id } })
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto) {
-        return User.update(id, updateUserDto);
+    async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
+        const user = await this.findOne(id);
+        if (!user) {
+            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+        }
+
+        await this.userRepository.update(id, updateUserDto);
     }
 
-    async remove(id: number) {
-        return User.remove({ where: { id } });
+    async remove(id: number): Promise<void> {
+        const user = await this.findOne(id);
+        if (!user) {
+            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+        }
+        await this.userRepository.remove(user);
     }
 }
