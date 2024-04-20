@@ -6,6 +6,10 @@ export type ProcessEnv = {
   PORT: number;
   JWT_SECRET: string;
   JWT_REFRESH_SECRET: string;
+  DB_USERNAME: string;
+  DB_PASSWORD: string;
+  DB_NAME: string;
+  DB_HOST: string;
 };
 
 config({
