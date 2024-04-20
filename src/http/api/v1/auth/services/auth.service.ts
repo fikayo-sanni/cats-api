@@ -10,6 +10,7 @@ import { hashString } from "src/common/utils/hash.util";
 import { BadRequestAppException } from "src/common/exceptions";
 import { ResponseMessages } from "src/common/exceptions/constants/messages.constants";
 import { IUser } from "../../users/interfaces/users.interface";
+import { UserRole } from "src/common/types/user.types";
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
 
             const user = await this.userService.findByParams(loginAuthDto);
 
-            const tokens = await this.getTokens(user.id);
+            const tokens = await this.getTokens(user.id, user.role);
 
             delete user.password;
 
@@ -62,12 +63,13 @@ export class AuthService {
         }
     }
 
-    async getTokens(id: number) {
+    async getTokens(id: number, role: UserRole) {
         // generate 7h access token and 7d refresh token
         const [access_token, refresh_token] = await Promise.all([
             this.jwtService.signAsync(
                 {
                     sub: id,
+                    role
                 },
                 {
                     secret: this.appConfig.JWT_SECRET,
@@ -77,6 +79,7 @@ export class AuthService {
             this.jwtService.signAsync(
                 {
                     sub: id,
+                    role,
                 },
                 {
                     secret: this.appConfig.JWT_REFRESH_SECRET,

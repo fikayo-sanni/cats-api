@@ -3,7 +3,7 @@ import { Roles } from '../../../../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../../../../common/guards/roles.guard';
 import { ParseIntPipe } from '../../../../../common/pipes/parse-int.pipe';
 import { CatsService } from '../services/cats.service';
-import { CreateCatDto } from '../dto/cat.create.dto';
+import { CreateCatDto } from '../dto/create-cat.dto';
 import { Cat } from '../interfaces/cat.interface';
 import { BaseAppController } from 'src/http/api/base/base.controller';
 

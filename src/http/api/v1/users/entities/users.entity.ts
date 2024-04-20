@@ -2,6 +2,7 @@ import { AppEntity } from 'src/app.entity';
 import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import { Cat } from '../../cats/entities/cats.entity';
 import { Favorite } from '../../favorites/entities/favorites.entity';
+import { UserRole } from 'src/common/types/user.types';
 
 @Entity()
 @Unique(['email', 'username'])
@@ -24,6 +25,13 @@ export class User extends AppEntity {
 
   @Column()
   refresh_token: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @OneToMany(() => Cat, cat => cat.user)
   cats: Cat[];
