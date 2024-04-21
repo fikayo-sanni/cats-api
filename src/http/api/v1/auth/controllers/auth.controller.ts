@@ -1,9 +1,12 @@
 import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { BaseAppController } from "src/http/api/base/base.controller";
-import { AuthRequest } from "src/common/types/auth.types";
+import { IAuthRequest } from "src/common/types/auth.types";
 import { CreateUserDto } from "../../users/dto/user.create.dto";
 import { LoginAuthDto } from "../dto/auth.login.dto";
+import { Response } from "express";
+import { AccessTokenGuard } from "src/common/guards/accessToken.guard";
+import { CustomValidationPipe } from "src/common/pipes/custom-validation.pipe";
 
 @Controller('api/v1/auth')
 export class AuthController extends BaseAppController {
@@ -32,7 +35,10 @@ export class AuthController extends BaseAppController {
   }
 
   @Post('logout')
-  public async logout(@Req() req: AuthRequest) {
-    await this.authService.logout(req.user.sub);
+  @UseGuards(AccessTokenGuard)
+  public async logout(@Req() req: IAuthRequest, @Res() res: Response,) {
+    const result = await this.authService.logout(req.user.sub);
+
+    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }
 }
