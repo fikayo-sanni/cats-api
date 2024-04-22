@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
 import { BaseAppController } from "src/http/api/base/base.controller";
 import { Roles } from "src/common/decorators/roles.decorator";
 import { CustomValidationPipe } from "src/common/pipes/custom-validation.pipe";
 import { IAuthRequest } from "src/common/types/auth.types";
-import { CreateCatDto } from "../../cats/dto/cat.create.dto";
 import { Response } from "express";
 import { AccessTokenGuard } from "src/common/guards/accessToken.guard";
 import { RolesGuard } from "src/common/guards/roles.guard";
@@ -12,7 +11,8 @@ import { PaginationPipe } from "src/common/pipes/pagination.pipe";
 import { IPaginationOptions } from "src/common/interfaces/pagination.interface";
 import { generateMetaResponse } from "src/common/utils/pagination.util";
 import { UpdateUserDto } from "../dto/user.update.dto";
-import { RequestBodyPipe } from "src/common/pipes/request-body.pipe";
+import { RequestBlacklistPipe } from "src/common/pipes/request-blacklist.pipe";
+import { CleanUserUpdateDto } from "../dto/user.clean.update.dto";
 
 @Controller('api/v1/users')
 @UseGuards(AccessTokenGuard, RolesGuard)
@@ -56,8 +56,7 @@ export class UsersController extends BaseAppController {
 
   @Put('/:id')
   @Roles(['admin'])
-  @UsePipes(new RequestBodyPipe())
-  async updateAdminUser(@Param('id', new ParseIntPipe()) id: number, @Body(new CustomValidationPipe()) user: UpdateUserDto, @Req() req: IAuthRequest,
+  async updateAdminUser(@Param('id', new ParseIntPipe()) id: number, @Body(new CustomValidationPipe()) user: CleanUserUpdateDto, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.update(id, user);
 
@@ -65,8 +64,7 @@ export class UsersController extends BaseAppController {
   }
 
   @Put('')
-  @UsePipes(new RequestBodyPipe())
-  async updateSessionUser(@Body(new CustomValidationPipe()) user: UpdateUserDto, @Req() req: IAuthRequest,
+  async updateSessionUser(@Body(new CustomValidationPipe()) user: CleanUserUpdateDto, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.update(req.user.sub, user);
 
