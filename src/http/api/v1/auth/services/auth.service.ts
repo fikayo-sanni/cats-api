@@ -32,7 +32,7 @@ export class AuthService {
 
             const user = await this.userService.findByParams(loginAuthDto);
 
-            if(!user) {
+            if (!user) {
                 throw new UnAuthorizedAppException(ResponseMessages.INVALID_LOGIN)
             }
 
@@ -113,6 +113,16 @@ export class AuthService {
         }
 
         return await this.getTokens(user.id, user.roles);
+    }
+
+    async changePassword(id: number, password: string) {
+        const user = await this.userService.findOne(id);
+
+        if (!user) {
+            throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
+        }
+
+        await this.userService.update(id, { password: hashString(password) })
     }
 
     async logout(id: number) {

@@ -8,6 +8,7 @@ import { Response } from "express";
 import { AccessTokenGuard } from "src/common/guards/accessToken.guard";
 import { CustomValidationPipe } from "src/common/pipes/custom-validation.pipe";
 import { RefreshAuthDto } from "../dto/auth.refresh.dto";
+import { ChangePasswordAuthDto } from "../dto/auth.change_password.dto";
 
 @Controller('api/v1/auth')
 export class AuthController extends BaseAppController {
@@ -46,6 +47,14 @@ export class AuthController extends BaseAppController {
   @Put('refresh')
   public async refreshUserTokens(@Body(new CustomValidationPipe()) data: RefreshAuthDto, @Res() res: Response,) {
     const result = await this.authService.refreshTokens(data.refresh_token);
+
+    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+  }
+
+  @Put('change-password')
+  @UseGuards(AccessTokenGuard)
+  public async changePassword(@Body(new CustomValidationPipe()) data: ChangePasswordAuthDto, @Req() req: IAuthRequest, @Res() res: Response,) {
+    const result = await this.authService.changePassword(req.user.sub, data.password);
 
     return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }

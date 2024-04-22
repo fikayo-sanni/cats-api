@@ -10,7 +10,7 @@ export class Cat extends AppEntity {
   name: string;
 
   @Column()
-  age: number;
+  birthday: string;
 
   @Column()
   breed: string;
