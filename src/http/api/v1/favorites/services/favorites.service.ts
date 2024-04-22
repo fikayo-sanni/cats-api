@@ -27,22 +27,14 @@ export class FavoritesService {
 
         const user = await this.userService.findOne(createFavoriteDto.user_id);
 
-        if(!user) {
-            throw new NotFoundAppException(ResponseMessages.USER_NOT_FOUND);
-        }
-
         const cat = await this.catService.findOne(createFavoriteDto.cat_id);
-
-        if(!cat) {
-            throw new NotFoundAppException(ResponseMessages.CAT_NOT_FOUND);
-        }
 
         const new_favorite = this.favoriteRepository.create({user, cat});
         return this.favoriteRepository.save(new_favorite);
     }
 
     async findOne(params: FavoriteDto): Promise<Favorite> {
-        return this.favoriteRepository.findOne({ where: params });
+        return await this.favoriteRepository.findOne({ where: params });
     }
 
     async remove(params: FavoriteDto): Promise<void> {

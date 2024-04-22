@@ -33,7 +33,13 @@ export class UsersService {
     }
 
     async findOne(id: number): Promise<User> {
-        return this.userRepository.findOne({ where: { id } })
+        const user = await this.userRepository.findOne({ where: { id } })
+
+        if (!user) {
+            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+        }
+
+        return user
     }
 
     async findByParams(params: Omit<Partial<UpdateUserDto>, 'roles'>): Promise<User> {
@@ -44,11 +50,6 @@ export class UsersService {
 
         this.appLogger.logInfo(updateUserDto);
 
-        const user = await this.findOne(id);
-        if (!user) {
-            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-        }
-
         this.appLogger.logInfo(updateUserDto);
 
         await this.userRepository.update(id, updateUserDto);
@@ -56,18 +57,12 @@ export class UsersService {
 
     async remove(id: number): Promise<void> {
         const user = await this.findOne(id);
-        if (!user) {
-            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-        }
+
         await this.userRepository.remove(user);
     }
 
     async makeAdmin(id: number): Promise<void> {
         const user = await this.findOne(id)
-
-        if (!user) {
-            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-        }
 
         const is_admin = user.roles.find((item: UserRole)=> item === UserRole.ADMIN)
         if (!is_admin) {

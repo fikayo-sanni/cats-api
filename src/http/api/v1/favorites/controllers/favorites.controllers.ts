@@ -10,13 +10,12 @@ import { Response } from "express";
 
 @UseGuards(AccessTokenGuard)
 @Controller('api/v1/favorites')
-export class CatsController extends BaseAppController {
+export class FavoriteController extends BaseAppController {
   constructor(private readonly favoritesService: FavoritesService) {
     super();
   }
 
   @Post('/:cat_id')
-  @Roles(['admin'])
   async create(
     @Param('cat_id', new ParseIntPipe()) cat_id: number, 
     @Res() res: Response,
@@ -28,7 +27,6 @@ export class CatsController extends BaseAppController {
   }
 
   @Delete('/:cat_id')
-  @Roles(['admin'])
   async delete(
     @Param('cat_id', new ParseIntPipe()) cat_id: number, 
     @Res() res: Response,

@@ -61,6 +61,10 @@ export class CatsService {
       .groupBy('cat.id, user.id') // Group by cat id and user id
       .getOne();
 
+    if (!cat) {
+      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+    }
+
     return cat;
   }
 
@@ -69,19 +73,13 @@ export class CatsService {
   }
 
   async update(id: number, updateCatDto: UpdateCatDto): Promise<void> {
-    const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-    }
-
+    await this.findOne(id);
     await this.catRepository.update(id, updateCatDto);
   }
 
   async remove(id: number): Promise<void> {
     const cat = await this.findOne(id);
-    if (!cat) {
-      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-    }
+
     await this.catRepository.remove(cat);
   }
 }

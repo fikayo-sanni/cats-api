@@ -5,6 +5,7 @@ import { CoreModule } from './core/core.module';
 import { UsersModule } from './http/api/v1/users/users.module';
 import { AuthModule } from './http/api/v1/auth/auth.module';
 import { dbdatasource } from './data.source';
+import { FavoritesModule } from './http/api/v1/favorites/favorites.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dbdatasource),
@@ -12,6 +13,7 @@ import { dbdatasource } from './data.source';
     CatsModule,
     UsersModule,
     AuthModule,
+    FavoritesModule
   ],
 })
 export class AppModule { }
