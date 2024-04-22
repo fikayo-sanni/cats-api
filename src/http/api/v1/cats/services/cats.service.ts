@@ -26,12 +26,25 @@ export class CatsService {
       throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
     }
 
-    const cat = this.catRepository.create({...createCatDto, user}); // map user to cat entity
+    const cat = this.catRepository.create({ ...createCatDto, user }); // map user to cat entity
     return this.catRepository.save(cat); // save cat
   }
 
   async findAll(params: IPaginationOptions): Promise<IPaginationResult<Cat>> {
-    const items = await this.catRepository.find(params); 
+    const items = await this.catRepository
+      .createQueryBuilder('cat')
+      .leftJoinAndSelect('cat.favorite', 'favorite') // Join the Favorite entity
+      .select([
+        'cat.id', // Assuming there's an 'id' field in Cat entity
+        'cat.name',
+        'cat.birthday',
+        'cat.breed',
+        'COUNT(favorite.id) AS favorite_num', // Count the number of favorites
+      ])
+      .groupBy('cat.id') // Group by cat id to get the count for each cat
+      .skip(params.skip) // Apply the skip parameter
+      .take(params.take) // Apply the take parameter
+      .getRawMany();
 
     const count = await this.catRepository.count()
 
@@ -39,7 +52,20 @@ export class CatsService {
   }
 
   async findOne(id: number): Promise<Cat> {
-    return this.catRepository.findOne({ where: { id } })
+    const cat = await this.catRepository
+      .createQueryBuilder('cat')
+      .leftJoinAndSelect('cat.user', 'user') // Join the User entity
+      .leftJoinAndSelect('cat.favorite', 'favorite') // Join the Favorite entity
+      .select([
+        'cat', // Select the cat entity
+        'user', // Select the user entity
+        'COUNT(favorite.id) AS favoriteCount', // Count the number of favorites
+      ])
+      .where('cat.id = :id', { id }) // Filter by cat id
+      .groupBy('cat.id') // Group by cat id to get the count for each cat
+      .getOne();
+
+    return cat;
   }
 
   async findByParams(params: Partial<CreateCatDto>): Promise<Cat> {
