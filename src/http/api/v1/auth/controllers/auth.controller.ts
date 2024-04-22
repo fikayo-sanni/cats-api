@@ -37,7 +37,7 @@ export class AuthController extends BaseAppController {
   @Get('me')
   @UseGuards(AccessTokenGuard)
   public async sessionUser(@Req() req: IAuthRequest, @Res() res: Response,) {
-    const result = await this.authService.logout(req.user.sub);
+    const result = await this.authService.sessionUser(req.user.sub);
 
     return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }
