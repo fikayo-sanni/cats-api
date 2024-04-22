@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { BaseAppController } from "src/http/api/base/base.controller";
 import { IAuthRequest } from "src/common/types/auth.types";
@@ -50,7 +50,7 @@ export class AuthController extends BaseAppController {
     return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }
 
-  @Post('logout')
+  @Delete('logout')
   @UseGuards(AccessTokenGuard)
   public async logout(@Req() req: IAuthRequest, @Res() res: Response,) {
     const result = await this.authService.logout(req.user.sub);

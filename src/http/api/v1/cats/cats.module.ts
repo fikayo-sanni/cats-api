@@ -6,10 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cat } from './entities/cats.entity';
 import { UsersModule } from '../users/users.module';
 import { User } from '../users/entities/users.entity';
+import { AppLogger } from 'src/common/utils/logger.util';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Cat, User]), UsersModule],
   controllers: [CatsController],
-  providers: [CatsService, UsersService],
+  providers: [CatsService, UsersService, AppLogger],
 })
 export class CatsModule {}
