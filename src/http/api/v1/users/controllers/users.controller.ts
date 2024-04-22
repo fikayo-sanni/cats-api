@@ -11,6 +11,7 @@ import { RolesGuard } from "src/common/guards/roles.guard";
 import { PaginationPipe } from "src/common/pipes/pagination.pipe";
 import { IPaginationOptions } from "src/common/interfaces/pagination.interface";
 import { generateMetaResponse } from "src/common/utils/pagination.util";
+import { UpdateUserDto } from "../dto/user.update.dto";
 
 @Controller('api/v1/users')
 @UseGuards(AccessTokenGuard, RolesGuard)
@@ -22,7 +23,7 @@ export class UsersController extends BaseAppController {
   @Put('/make-admin/:id')
   @Roles(['admin'])
   async makeAdmin(
-    @Param('id', new ParseIntPipe()) id: number, 
+    @Param('id', new ParseIntPipe()) id: number,
     @Res() res: Response,
   ) {
     const result = await this.usersService.makeAdmin(id);
@@ -48,6 +49,26 @@ export class UsersController extends BaseAppController {
   async findOne(@Param('id', new ParseIntPipe()) id: number, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.findOne(id);
+
+    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+  }
+
+  @Put('/:id')
+  @Roles(['admin'])
+  @UsePipes(new PaginationPipe())
+  async updateAdminUser(@Param('id', new ParseIntPipe()) id: number, @Body(new CustomValidationPipe()) user: UpdateUserDto, @Req() req: IAuthRequest,
+    @Res() res: Response) {
+      
+    const result = await this.usersService.update(id, user);
+
+    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+  }
+
+  @Put('')
+  @UsePipes(new PaginationPipe())
+  async updateSessionUser(@Body(new CustomValidationPipe()) user: UpdateUserDto, @Req() req: IAuthRequest,
+    @Res() res: Response) {
+    const result = await this.usersService.update(req.user.sub, user);
 
     return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }
