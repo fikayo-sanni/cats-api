@@ -23,8 +23,8 @@ export class User extends AppEntity {
   @Column()
   password: string;
 
-  @Column()
-  refresh_token: string;
+  @Column({nullable: true})
+  refresh_token: string | null;
 
   @Column({
     type: 'simple-array',
