@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { BaseAppController } from "src/http/api/base/base.controller";
 import { IAuthRequest } from "src/common/types/auth.types";
@@ -30,6 +30,14 @@ export class AuthController extends BaseAppController {
     @Res() res: Response,
   ) {
     const result = await this.authService.login(data);
+
+    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+  }
+
+  @Get('me')
+  @UseGuards(AccessTokenGuard)
+  public async sessionUser(@Req() req: IAuthRequest, @Res() res: Response,) {
+    const result = await this.authService.logout(req.user.sub);
 
     return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }

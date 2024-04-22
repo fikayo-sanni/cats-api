@@ -100,6 +100,11 @@ export class AuthService {
         };
     }
 
+    async sessionUser(id: number) {
+        // nullify user's refresh token
+        return this.userService.findOne(id);
+    }
+
     async logout(id: number) {
         // nullify user's refresh token
         return this.userService.update(id, { refresh_token: null });
