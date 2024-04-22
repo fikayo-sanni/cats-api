@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
 import { BaseAppController } from "src/http/api/base/base.controller";
 import { Roles } from "src/common/decorators/roles.decorator";
@@ -12,6 +12,7 @@ import { PaginationPipe } from "src/common/pipes/pagination.pipe";
 import { IPaginationOptions } from "src/common/interfaces/pagination.interface";
 import { generateMetaResponse } from "src/common/utils/pagination.util";
 import { UpdateUserDto } from "../dto/user.update.dto";
+import { RequestBodyPipe } from "src/common/pipes/request-body.pipe";
 
 @Controller('api/v1/users')
 @UseGuards(AccessTokenGuard, RolesGuard)
@@ -55,17 +56,16 @@ export class UsersController extends BaseAppController {
 
   @Put('/:id')
   @Roles(['admin'])
-  @UsePipes(new PaginationPipe())
+  @UsePipes(new RequestBodyPipe())
   async updateAdminUser(@Param('id', new ParseIntPipe()) id: number, @Body(new CustomValidationPipe()) user: UpdateUserDto, @Req() req: IAuthRequest,
     @Res() res: Response) {
-      
     const result = await this.usersService.update(id, user);
 
     return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
   }
 
   @Put('')
-  @UsePipes(new PaginationPipe())
+  @UsePipes(new RequestBodyPipe())
   async updateSessionUser(@Body(new CustomValidationPipe()) user: UpdateUserDto, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.update(req.user.sub, user);

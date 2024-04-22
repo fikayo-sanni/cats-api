@@ -41,6 +41,9 @@ export class UsersService {
     }
 
     async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
+
+        this.appLogger.logInfo(updateUserDto);
+
         const user = await this.findOne(id);
         if (!user) {
             throw new NotFoundAppException(ResponseMessages.NOT_FOUND);

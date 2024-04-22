@@ -6,5 +6,6 @@ export enum ResponseMessages {
     USER_NOT_FOUND = 'user not found',
     CAT_NOT_FOUND = 'cat not found',
     RESOURCE_EXISTS = 'resource exists',
-    UNAUTHORIZED = 'unauthorized'
+    UNAUTHORIZED = 'unauthorized',
+    FORBIDDEN = 'forbidden resource'
 }
