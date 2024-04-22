@@ -8,7 +8,7 @@ import { UsersModule } from '../users/users.module';
 import { User } from '../users/entities/users.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cat, User]), UsersModule], // Import any modules that provide dependencies for CatsService
+  imports: [TypeOrmModule.forFeature([Cat, User]), UsersModule],
   controllers: [CatsController],
   providers: [CatsService, UsersService],
 })
