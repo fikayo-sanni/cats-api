@@ -1,28 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cat } from '../entities/cats.entity';
 import { Repository } from 'typeorm';
 import { CreateCatDto } from '../dto/cat.create.dto';
 import { IPaginationOptions, IPaginationResult } from 'src/common/interfaces/pagination.interface';
 import { ResponseMessages } from 'src/common/exceptions/constants/messages.constants';
-import { NotFoundAppException } from 'src/common/exceptions';
+import { NotAuthorizedAppException, NotFoundAppException } from 'src/common/exceptions';
 import { UpdateCatDto } from '../dto/cat.update.dto';
+import { UsersService } from '../../users/services/users.service';
 
 @Injectable()
 export class CatsService {
 
   constructor(
     @InjectRepository(Cat)
-    private readonly catRepository: Repository<Cat>
+    private readonly catRepository: Repository<Cat>,
+    private readonly userService: UsersService,
   ) { }
 
-  async create(createCatDto: CreateCatDto): Promise<Cat> {
-    const cat = this.catRepository.create(createCatDto);
-    return this.catRepository.save(cat);
+  async create(createCatDto: CreateCatDto, user_id: number): Promise<Cat> {
+
+    const user = await this.userService.findOne(user_id);
+
+    if (!user) { // check if user exists
+      throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
+    }
+
+    const cat = this.catRepository.create({...createCatDto, user}); // map user to cat entity
+    return this.catRepository.save(cat); // save cat
   }
 
   async findAll(params: IPaginationOptions): Promise<IPaginationResult<Cat>> {
-    const items = await this.catRepository.find(params);
+    const items = await this.catRepository.find(params); 
 
     const count = await this.catRepository.count()
 

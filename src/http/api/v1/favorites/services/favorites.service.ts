@@ -5,13 +5,17 @@ import { Repository } from 'typeorm';
 import { ResponseMessages } from 'src/common/exceptions/constants/messages.constants';
 import { NotFoundAppException } from 'src/common/exceptions';
 import { FavoriteDto } from '../dtos/favorites.dto';
+import { UsersService } from '../../users/services/users.service';
+import { CatsService } from '../../cats/services/cats.service';
 
 @Injectable()
 export class FavoritesService {
 
     constructor(
         @InjectRepository(Favorite)
-        private readonly favoriteRepository: Repository<Favorite>
+        private readonly favoriteRepository: Repository<Favorite>,
+        private readonly userService: UsersService,
+        private readonly catService: CatsService,
     ) { }
 
     async create(createFavoriteDto: FavoriteDto): Promise<Favorite> {
@@ -21,7 +25,19 @@ export class FavoritesService {
             throw new NotFoundAppException(ResponseMessages.RESOURCE_EXISTS);
         }
 
-        const new_favorite = this.favoriteRepository.create(createFavoriteDto);
+        const user = await this.userService.findOne(createFavoriteDto.user_id);
+
+        if(!user) {
+            throw new NotFoundAppException(ResponseMessages.USER_NOT_FOUND);
+        }
+
+        const cat = await this.catService.findOne(createFavoriteDto.cat_id);
+
+        if(!cat) {
+            throw new NotFoundAppException(ResponseMessages.CAT_NOT_FOUND);
+        }
+
+        const new_favorite = this.favoriteRepository.create({user, cat});
         return this.favoriteRepository.save(new_favorite);
     }
 

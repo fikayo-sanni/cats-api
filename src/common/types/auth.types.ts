@@ -1,11 +1,12 @@
 import { UserRole } from "./user.types";
+import { Request } from 'express';
 
 export const IS_PUBLIC_KEY = 'isPublic';
-export interface AuthRequest extends Request {
-  user: JwtPayload;
+export interface IAuthRequest extends Request {
+  user: IJwtPayload;
 }
 
-export interface JwtPayload {
-  sub: string;
+export interface IJwtPayload {
+  sub: number;
   roles: Array<UserRole>;
 }
