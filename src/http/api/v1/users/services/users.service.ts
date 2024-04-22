@@ -33,7 +33,7 @@ export class UsersService {
         return this.userRepository.findOne({ where: { id } })
     }
 
-    async findByParams(params: Partial<CreateUserDto>): Promise<User> {
+    async findByParams(params: Partial<UpdateUserDto>): Promise<User> {
         return this.userRepository.findOne({where: params});
     }
 

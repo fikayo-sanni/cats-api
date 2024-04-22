@@ -7,7 +7,7 @@ import { CreateUserDto } from "../../users/dto/user.create.dto";
 import { ConfigType } from "@nestjs/config";
 import { AppLogger } from "src/common/utils/logger.util";
 import { hashString } from "src/common/utils/hash.util";
-import { BadRequestAppException, UnAuthorizedAppException } from "src/common/exceptions";
+import { BadRequestAppException, NotAuthorizedAppException, UnAuthorizedAppException } from "src/common/exceptions";
 import { ResponseMessages } from "src/common/exceptions/constants/messages.constants";
 import { IUser } from "../../users/interfaces/users.interface";
 import { UserRole } from "src/common/types/user.types";
@@ -103,6 +103,16 @@ export class AuthService {
     async sessionUser(id: number) {
         // nullify user's refresh token
         return this.userService.findOne(id);
+    }
+
+    async refreshTokens(refresh_token: string) {
+        const user = await this.userService.findByParams({ refresh_token });
+
+        if (!user) {
+            throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
+        }
+
+        return await this.getTokens(user.id, user.roles);
     }
 
     async logout(id: number) {
