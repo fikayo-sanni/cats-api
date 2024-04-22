@@ -55,14 +55,10 @@ export class CatsService {
     const cat = await this.catRepository
       .createQueryBuilder('cat')
       .leftJoinAndSelect('cat.user', 'user') // Join the User entity
-      .leftJoinAndSelect('cat.favorite', 'favorite') // Join the Favorite entity
-      .select([
-        'cat', // Select the cat entity
-        'user', // Select the user entity
-        'COUNT(favorite.id) AS favoriteCount', // Count the number of favorites
-      ])
+      .leftJoin('cat.favorite', 'favorite') // Left join the Favorite entity
+      .addSelect('COUNT(favorite.id) AS favoriteCount') // Select the count of favorites
       .where('cat.id = :id', { id }) // Filter by cat id
-      .groupBy('cat.id') // Group by cat id to get the count for each cat
+      .groupBy('cat.id, user.id') // Group by cat id and user id
       .getOne();
 
     return cat;
