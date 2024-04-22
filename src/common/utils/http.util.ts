@@ -32,12 +32,6 @@ export class HttpResponse {
     return this;
   }
 
-  setDataRaw(data: unknown) {
-
-    this.data = data;
-    return this;
-  }
-
   setDataKey(dataKey: string) {
     this.dataKey = dataKey;
     return this;
@@ -47,16 +41,6 @@ export class HttpResponse {
     try {
       this.dataKey = dataKey;
       this.data = stripAttributes(data, response_blacklist);
-      return this;
-    } catch (e) {
-      throw new ForbiddenAppException(e.message);
-    }
-  }
-
-  setDataWithKeyRaw(dataKey: string, data: unknown) {
-    try {
-      this.dataKey = dataKey;
-      this.data = data;
       return this;
     } catch (e) {
       throw new ForbiddenAppException(e.message);
@@ -84,6 +68,9 @@ export class HttpResponse {
   }
 
   sendResponseBody(res: Response, body: any) {
+
+    body = stripAttributes(body, response_blacklist);
+
     return res
       .status(this.serverCode)
       .send({ statusCode: this.statusCode, message: this.message, ...body });

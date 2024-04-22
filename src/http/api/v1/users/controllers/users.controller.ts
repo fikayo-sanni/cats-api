@@ -29,7 +29,7 @@ export class UsersController extends BaseAppController {
   ) {
     const result = await this.usersService.makeAdmin(id);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Get()
@@ -51,7 +51,7 @@ export class UsersController extends BaseAppController {
     @Res() res: Response) {
     const result = await this.usersService.findOne(id);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Put('/:id')
@@ -60,7 +60,7 @@ export class UsersController extends BaseAppController {
     @Res() res: Response) {
     const result = await this.usersService.update(id, user);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Put('')
@@ -68,6 +68,6 @@ export class UsersController extends BaseAppController {
     @Res() res: Response) {
     const result = await this.usersService.update(req.user.sub, user);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 }

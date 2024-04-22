@@ -24,7 +24,7 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.favoritesService.create({user_id: req.user.sub, cat_id});
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Delete('/:cat_id')
@@ -36,6 +36,6 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.favoritesService.remove({user_id: req.user.sub, cat_id});
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 }

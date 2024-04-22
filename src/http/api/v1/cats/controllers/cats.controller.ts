@@ -30,7 +30,7 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.create(createCatDto, req.user.sub);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Put('/:id')
@@ -42,7 +42,7 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.update(id, updateCatDto);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Delete('/:id')
@@ -53,7 +53,7 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.remove(id);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Get()
@@ -74,6 +74,6 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.findOne(id);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 }
