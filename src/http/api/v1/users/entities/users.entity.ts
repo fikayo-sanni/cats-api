@@ -28,7 +28,7 @@ export class User extends AppEntity {
 
   @Column({
     type: 'simple-array',
-    default: [UserRole.USER],
+    default: UserRole.USER,
   })
   roles: UserRole[];
 

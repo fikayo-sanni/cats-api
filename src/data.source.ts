@@ -16,6 +16,8 @@ export const dbdatasource: DataSourceOptions = {
   database: appConfig.DB_NAME,
   entities: [User, Cat, Favorite],
   synchronize: true,
+  migrations: ['datbase/migrations/*.js'],
+  migrationsTableName: "tundrax_migrations",
 };
 
 const dataSource = new DataSource(dbdatasource)
