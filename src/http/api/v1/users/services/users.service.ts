@@ -52,7 +52,7 @@ export class UsersService {
 
         this.appLogger.logInfo(updateUserDto);
 
-        await this.userRepository.update(id, updateUserDto);
+        this.userRepository.update(id, updateUserDto);
     }
 
     async remove(id: number): Promise<void> {
