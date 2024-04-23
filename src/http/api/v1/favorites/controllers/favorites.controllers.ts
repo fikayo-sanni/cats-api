@@ -11,6 +11,7 @@ import { PaginationPipe } from "src/common/pipes/pagination.pipe";
 import { IPaginationOptions } from "src/common/interfaces/pagination.interface";
 import { generateMetaResponse } from "src/common/utils/pagination.util";
 import { RolesGuard } from "src/common/guards/roles.guard";
+import { UserRole } from "src/common/types/user.types";
 
 @UseGuards(AccessTokenGuard, RolesGuard)
 @Controller('api/v1/favorites')
@@ -57,7 +58,7 @@ export class FavoriteController extends BaseAppController {
   }
 
   @Get('/user/:user_id')
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   @UsePipes(new PaginationPipe())
   async fetchUserLikes(
     @Query() filterQuery: IPaginationOptions,

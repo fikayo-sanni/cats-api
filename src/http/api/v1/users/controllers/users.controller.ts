@@ -13,6 +13,7 @@ import { generateMetaResponse } from "src/common/utils/pagination.util";
 import { UpdateUserDto } from "../dto/user.update.dto";
 import { RequestBlacklistPipe } from "src/common/pipes/request-blacklist.pipe";
 import { CleanUserUpdateDto } from "../dto/user.clean.update.dto";
+import { UserRole } from "src/common/types/user.types";
 
 @Controller('api/v1/users')
 @UseGuards(AccessTokenGuard, RolesGuard)
@@ -22,7 +23,7 @@ export class UsersController extends BaseAppController {
   }
 
   @Put('/make-admin/:id')
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   async makeAdmin(
     @Param('id', new ParseIntPipe()) id: number,
     @Res() res: Response,
@@ -33,7 +34,7 @@ export class UsersController extends BaseAppController {
   }
 
   @Get()
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   @UsePipes(new PaginationPipe())
   async findAll(@Query() filterQuery: IPaginationOptions, @Req() req: IAuthRequest,
     @Res() res: Response) {
@@ -45,7 +46,7 @@ export class UsersController extends BaseAppController {
   }
 
   @Get('/:id')
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   async findOne(@Param('id', new ParseIntPipe()) id: number, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.findOne(id);
@@ -54,7 +55,7 @@ export class UsersController extends BaseAppController {
   }
 
   @Put('/:id')
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   async updateAdminUser(@Param('id', new ParseIntPipe()) id: number, @Body(new CustomValidationPipe()) user: CleanUserUpdateDto, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.update(id, user);
