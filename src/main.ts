@@ -5,12 +5,12 @@ import appConfiguration from 'src/common/config/envs/app.config';
 import * as passport from 'passport';
 import { SeederService } from './database/seeder/seeder.service';
 
-const validationPipeService = require('@pipets/validation-pipes');
+// const validationPipeService = require('@pipets/validation-pipes');
 
 const appConfig = appConfiguration();
 async function bootstrap() {
   try {
-    validationPipeService();
+    // validationPipeService();
     const app = await NestFactory.create(AppModule);
 
     const seederService = app.get(SeederService);
