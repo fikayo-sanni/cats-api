@@ -18,6 +18,11 @@ export const dbdatasource: DataSourceOptions = {
   synchronize: true,
   migrations: ['datbase/migrations/*.js'],
   migrationsTableName: "tundrax_migrations",
+  extra: {
+    ssl: {
+      rejectUnauthorized: false
+    },
+  }
 };
 
 const dataSource = new DataSource(dbdatasource)
