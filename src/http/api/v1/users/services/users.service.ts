@@ -7,6 +7,8 @@ import { Repository } from "typeorm";
 import { IPaginationOptions, IPaginationResult } from "src/common/interfaces/pagination.interface";
 import { ResponseMessages } from "src/common/exceptions/constants/messages.constants";
 import { NotFoundAppException } from "src/common/exceptions";
+import { UserRole } from "src/common/types/user.types";
+import { AppLogger } from "src/common/utils/logger.util";
 
 @Injectable()
 export class UsersService {
@@ -14,6 +16,7 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private readonly appLogger: AppLogger,
     ) { }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
@@ -30,27 +33,41 @@ export class UsersService {
     }
 
     async findOne(id: number): Promise<User> {
-        return this.userRepository.findOne({ where: { id } })
+        const user = await this.userRepository.findOne({ where: { id } })
+
+        if (!user) {
+            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+        }
+
+        return user
     }
 
-    async findByParams(params: Partial<CreateUserDto>): Promise<User> {
+    async findByParams(params: Omit<Partial<UpdateUserDto>, 'roles'>): Promise<User> {
         return this.userRepository.findOne({where: params});
     }
 
     async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
-        const user = await this.findOne(id);
-        if (!user) {
-            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-        }
 
-        await this.userRepository.update(id, updateUserDto);
+        this.appLogger.logInfo(updateUserDto);
+
+        this.appLogger.logInfo(updateUserDto);
+
+        this.userRepository.update(id, updateUserDto);
     }
 
     async remove(id: number): Promise<void> {
         const user = await this.findOne(id);
-        if (!user) {
-            throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-        }
+
         await this.userRepository.remove(user);
+    }
+
+    async makeAdmin(id: number): Promise<void> {
+        const user = await this.findOne(id)
+
+        const is_admin = user.roles.find((item: UserRole)=> item === UserRole.ADMIN)
+        if (!is_admin) {
+            user.roles.push(UserRole.ADMIN);
+            await this.update(id, {roles: user.roles})
+        }
     }
 }

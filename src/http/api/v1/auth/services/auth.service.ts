@@ -7,7 +7,7 @@ import { CreateUserDto } from "../../users/dto/user.create.dto";
 import { ConfigType } from "@nestjs/config";
 import { AppLogger } from "src/common/utils/logger.util";
 import { hashString } from "src/common/utils/hash.util";
-import { BadRequestAppException } from "src/common/exceptions";
+import { BadRequestAppException, NotAuthorizedAppException, UnAuthorizedAppException } from "src/common/exceptions";
 import { ResponseMessages } from "src/common/exceptions/constants/messages.constants";
 import { IUser } from "../../users/interfaces/users.interface";
 import { UserRole } from "src/common/types/user.types";
@@ -31,6 +31,10 @@ export class AuthService {
             Object.assign(loginAuthDto, { password: hashString(loginAuthDto.password) });
 
             const user = await this.userService.findByParams(loginAuthDto);
+
+            if (!user) {
+                throw new UnAuthorizedAppException(ResponseMessages.INVALID_LOGIN)
+            }
 
             const tokens = await this.getTokens(user.id, user.roles);
 
@@ -96,12 +100,33 @@ export class AuthService {
         };
     }
 
+    async sessionUser(id: number) {
+        return this.userService.findOne(id);
+    }
+
+    async refreshTokens(refresh_token: string) {
+        const user = await this.userService.findByParams({ refresh_token });
+
+        if (!user) {
+            throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
+        }
+
+        return await this.getTokens(user.id, user.roles);
+    }
+
+    async changePassword(id: number, password: string) {
+        const user = await this.userService.findOne(id);
+
+        if (!user) {
+            throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
+        }
+
+        await this.userService.update(id, { password: hashString(password) })
+    }
+
     async logout(id: number) {
         // nullify user's refresh token
         return this.userService.update(id, { refresh_token: null });
     }
 
-    // TODO: create forgotPassword
-
-    // TODO: implement changePassword
 }

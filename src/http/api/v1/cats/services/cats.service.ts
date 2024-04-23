@@ -8,6 +8,7 @@ import { ResponseMessages } from 'src/common/exceptions/constants/messages.const
 import { NotAuthorizedAppException, NotFoundAppException } from 'src/common/exceptions';
 import { UpdateCatDto } from '../dto/cat.update.dto';
 import { UsersService } from '../../users/services/users.service';
+import { Favorite } from '../../favorites/entities/favorites.entity';
 
 @Injectable()
 export class CatsService {
@@ -15,6 +16,8 @@ export class CatsService {
   constructor(
     @InjectRepository(Cat)
     private readonly catRepository: Repository<Cat>,
+    @InjectRepository(Favorite)
+    private readonly favoriteRepository: Repository<Favorite>,
     private readonly userService: UsersService,
   ) { }
 
@@ -26,12 +29,25 @@ export class CatsService {
       throw new NotAuthorizedAppException(ResponseMessages.UNAUTHORIZED);
     }
 
-    const cat = this.catRepository.create({...createCatDto, user}); // map user to cat entity
+    const cat = this.catRepository.create({ ...createCatDto, user }); // map user to cat entity
     return this.catRepository.save(cat); // save cat
   }
 
   async findAll(params: IPaginationOptions): Promise<IPaginationResult<Cat>> {
-    const items = await this.catRepository.find(params); 
+    const items = await this.catRepository
+      .createQueryBuilder('cat')
+      .leftJoinAndSelect('cat.favorite', 'favorite') // Join the Favorite entity
+      .select([
+        'cat.id', // Assuming there's an 'id' field in Cat entity
+        'cat.name',
+        'cat.birthday',
+        'cat.breed',
+        'COUNT(favorite.id) AS favorite_num', // Count the number of favorites
+      ])
+      .groupBy('cat.id') // Group by cat id to get the count for each cat
+      .skip(params.skip) // Apply the skip parameter
+      .take(params.take) // Apply the take parameter
+      .getRawMany();
 
     const count = await this.catRepository.count()
 
@@ -39,7 +55,20 @@ export class CatsService {
   }
 
   async findOne(id: number): Promise<Cat> {
-    return this.catRepository.findOne({ where: { id } })
+    const cat = await this.catRepository
+      .createQueryBuilder('cat')
+      .leftJoinAndSelect('cat.user', 'user') // Join the User entity
+      .leftJoin('cat.favorite', 'favorite') // Left join the Favorite entity
+      .addSelect('COUNT(favorite.id) AS favoriteCount') // Select the count of favorites
+      .where('cat.id = :id', { id }) // Filter by cat id
+      .groupBy('cat.id, user.id') // Group by cat id and user id
+      .getOne();
+
+    if (!cat) {
+      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
+    }
+
+    return cat;
   }
 
   async findByParams(params: Partial<CreateCatDto>): Promise<Cat> {
@@ -47,19 +76,15 @@ export class CatsService {
   }
 
   async update(id: number, updateCatDto: UpdateCatDto): Promise<void> {
-    const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-    }
-
+    await this.findOne(id);
     await this.catRepository.update(id, updateCatDto);
   }
 
   async remove(id: number): Promise<void> {
     const cat = await this.findOne(id);
-    if (!cat) {
-      throw new NotFoundAppException(ResponseMessages.NOT_FOUND);
-    }
+
+    await this.favoriteRepository.delete({cat_id: id})
+
     await this.catRepository.remove(cat);
   }
 }

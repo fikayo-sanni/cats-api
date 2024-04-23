@@ -13,6 +13,7 @@ import { IAuthRequest } from 'src/common/types/auth.types';
 import { generateMetaResponse } from 'src/common/utils/pagination.util';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { UpdateCatDto } from '../dto/cat.update.dto';
+import { UserRole } from 'src/common/types/user.types';
 
 @UseGuards(AccessTokenGuard, RolesGuard)
 @Controller('api/v1/cats')
@@ -22,7 +23,7 @@ export class CatsController extends BaseAppController {
   }
 
   @Post()
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   async create(
     @Body(new CustomValidationPipe()) createCatDto: CreateCatDto,
     @Res() res: Response,
@@ -30,11 +31,11 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.create(createCatDto, req.user.sub);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Put('/:id')
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   async update(
     @Param('id', new ParseIntPipe()) id: number, 
     @Body(new CustomValidationPipe()) updateCatDto: UpdateCatDto,
@@ -42,18 +43,18 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.update(id, updateCatDto);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Delete('/:id')
-  @Roles(['admin'])
+  @Roles([UserRole.ADMIN])
   async delete(
     @Param('id', new ParseIntPipe()) id: number, 
     @Res() res: Response
   ) {
     const result = await this.catsService.remove(id);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 
   @Get()
@@ -74,6 +75,6 @@ export class CatsController extends BaseAppController {
   ) {
     const result = await this.catsService.findOne(id);
 
-    return this.getHttpResponse().setAuthDataWithKey('data', result).send(res);
+    return this.getHttpResponse().setDataWithKey('data', result).send(res);
   }
 }

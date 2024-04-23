@@ -1,11 +1,11 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
 
 export class CreateCatDto {
   @IsString()
   readonly name: string;
 
-  @IsInt()
-  readonly age: number;
+  @IsDateString()
+  readonly birthday: string;
 
   @IsString()
   readonly breed: string;

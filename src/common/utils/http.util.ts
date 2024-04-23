@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 import appConfig from '../config/envs/app.config';
 import { get } from 'lodash';
 import { ForbiddenAppException } from '../exceptions/handlers/forbidden.exception.handler';
+import { response_blacklist, stripAttributes } from './blacklist.util';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class HttpResponse {
@@ -26,7 +27,8 @@ export class HttpResponse {
   }
 
   setData(data: unknown) {
-    this.data = data;
+
+    this.data = stripAttributes(data, response_blacklist);
     return this;
   }
 
@@ -38,7 +40,7 @@ export class HttpResponse {
   setDataWithKey(dataKey: string, data: unknown) {
     try {
       this.dataKey = dataKey;
-      this.data = data;
+      this.data = stripAttributes(data, response_blacklist);
       return this;
     } catch (e) {
       throw new ForbiddenAppException(e.message);
@@ -66,6 +68,9 @@ export class HttpResponse {
   }
 
   sendResponseBody(res: Response, body: any) {
+
+    body = stripAttributes(body, response_blacklist);
+
     return res
       .status(this.serverCode)
       .send({ statusCode: this.statusCode, message: this.message, ...body });

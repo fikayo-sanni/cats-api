@@ -16,7 +16,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./e2e/jest-e2e.json"
+    "test:e2e": "jest --config ./e2e/jest-e2e.json",
+    "typeorm": "npm run build && npx typeorm -d dist/data.source.js",
+    "migration:generate": "npm run typeorm -- migration:generate"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.2",
@@ -27,7 +29,6 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "10.3.2",
     "@nestjs/typeorm": "^10.0.2",
-    "@pipets/validation-pipes": "^1.0.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
     "dotenv": "^16.4.5",
@@ -69,7 +70,6 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -78,6 +78,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "rootDir": ".",
+    "moduleNameMapper": {
+      "~/(.*)": "<rootDir>/src/$1",
+      "@src/(.*)": "<rootDir>/src/$1",
+      "src/(.*)": "<rootDir>/src/$1"
+    }
   }
 }
