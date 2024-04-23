@@ -101,7 +101,6 @@ export class AuthService {
     }
 
     async sessionUser(id: number) {
-        // nullify user's refresh token
         return this.userService.findOne(id);
     }
 
@@ -130,7 +129,4 @@ export class AuthService {
         return this.userService.update(id, { refresh_token: null });
     }
 
-    // TODO: create forgotPassword
-
-    // TODO: implement changePassword
 }
