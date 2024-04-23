@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5001:5001'
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+      - JWT_SECRET=secretive
+      - JWT_REFRESH_SECRET=ultra-secretive
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=oluwafikayosanni
+      - DB_HOST=localhost
+      - APP_URL=http://localhost:5001
