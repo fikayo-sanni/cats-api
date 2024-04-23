@@ -1,6 +1,7 @@
 import { UserRole } from "src/common/types/user.types";
 import { User } from "../../users/entities/users.entity";
 import { LoginAuthDto } from "../dto/auth.login.dto";
+import { MockTimestamps } from "src/common/mocks/common.mocks";
 
 export const RegisterBody = {
     first_name: 'Oluwafikayo',
@@ -10,18 +11,12 @@ export const RegisterBody = {
     password: '@Test1234'
 }
 
-
-export const timestamps = {
-    created_at: new Date('2024-04-22T09:46:01.786Z'),
-    update_at: new Date('2024-04-22T09:46:01.786Z'),
-}
-
 export const RegisterResult = {
     ...RegisterBody,
     password: 'f926b91963b91e3e46d68f694ac5f4d5',
     refresh_token: null,
     id: 3,
-    ...timestamps,
+    ...MockTimestamps,
     roles: [
         UserRole.USER
     ]
