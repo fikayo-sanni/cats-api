@@ -69,7 +69,15 @@ On initial execution of the application, an admin User will be generated which c
 - email: default@admin.com
 - password: password
 
+You can update this password using the Change Password Endpoint After a successful login
 
+# Technologies Used
+
+- Database: Postgres
+- ORM: TypeOrm
+- Data Validation: Class Validator
+- Authorization & Authentication: PassportJS & JWT
+- Tests: Jest
 
 ## License
 
