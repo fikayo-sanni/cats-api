@@ -22,7 +22,7 @@ export class Cat extends AppEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => Favorite, favorite => favorite.cat)
+  @OneToMany(() => Favorite, favorite => favorite.cat, { cascade: true })
   favorite: Favorite[];
   
 }

@@ -46,7 +46,6 @@ export class UsersController extends BaseAppController {
 
   @Get('/:id')
   @Roles(['admin'])
-  @UsePipes(new PaginationPipe())
   async findOne(@Param('id', new ParseIntPipe()) id: number, @Req() req: IAuthRequest,
     @Res() res: Response) {
     const result = await this.usersService.findOne(id);

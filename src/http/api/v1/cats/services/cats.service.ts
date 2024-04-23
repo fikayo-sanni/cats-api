@@ -8,6 +8,7 @@ import { ResponseMessages } from 'src/common/exceptions/constants/messages.const
 import { NotAuthorizedAppException, NotFoundAppException } from 'src/common/exceptions';
 import { UpdateCatDto } from '../dto/cat.update.dto';
 import { UsersService } from '../../users/services/users.service';
+import { Favorite } from '../../favorites/entities/favorites.entity';
 
 @Injectable()
 export class CatsService {
@@ -15,6 +16,8 @@ export class CatsService {
   constructor(
     @InjectRepository(Cat)
     private readonly catRepository: Repository<Cat>,
+    @InjectRepository(Favorite)
+    private readonly favoriteRepository: Repository<Favorite>,
     private readonly userService: UsersService,
   ) { }
 
@@ -79,6 +82,8 @@ export class CatsService {
 
   async remove(id: number): Promise<void> {
     const cat = await this.findOne(id);
+
+    await this.favoriteRepository.delete({cat_id: id})
 
     await this.catRepository.remove(cat);
   }

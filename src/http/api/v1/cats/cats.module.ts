@@ -7,9 +7,10 @@ import { Cat } from './entities/cats.entity';
 import { UsersModule } from '../users/users.module';
 import { User } from '../users/entities/users.entity';
 import { AppLogger } from 'src/common/utils/logger.util';
+import { Favorite } from '../favorites/entities/favorites.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cat, User]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Cat, User, Favorite]), UsersModule],
   controllers: [CatsController],
   providers: [CatsService, UsersService, AppLogger],
 })
