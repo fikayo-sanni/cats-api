@@ -8,12 +8,12 @@ services:
     ports:
       - '5001:5001'
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=
       - PORT=5001
-      - JWT_SECRET=secretive
-      - JWT_REFRESH_SECRET=ultra-secretive
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=oluwafikayosanni
-      - DB_HOST=localhost
-      - APP_URL=http://localhost:5001
+      - JWT_SECRET=
+      - JWT_REFRESH_SECRET=
+      - DB_USERNAME=
+      - DB_PASSWORD=
+      - DB_NAME=
+      - DB_HOST=
+      - APP_URL=
