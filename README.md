@@ -59,7 +59,7 @@ $ docker-compose up
 
 Both of these methods serve the application over https://localhost:5001
 
-Remote URL: 
+Remote URL: https://cats-api-fikky-867267d38a0e.herokuapp.com
 Postman Documentation: https://documenter.getpostman.com/view/778610/2sA3Bq5X1T
 
 ## Additional Information
