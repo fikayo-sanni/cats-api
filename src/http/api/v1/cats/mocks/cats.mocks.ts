@@ -24,18 +24,18 @@ export const UpdateCatRequest: UpdateCatDto = {
 export const FetchManyCats = {
     items: [
         {
-            "cat_id": 2,
-            "cat_name": "Portiphar",
-            "cat_birthday": "2024-03-24T06:07:42.149Z",
-            "cat_breed": "iberian",
-            "favorite_num": "0"
+            cat_id: 2,
+            cat_name: "Portiphar",
+            cat_birthday: "2024-03-24T06:07:42.149Z",
+            cat_breed: "iberian",
+            favorite_num: "0"
         },
         {
-            "cat_id": 1,
-            "cat_name": "Dexter",
-            "cat_birthday": "2024-03-24T06:07:42.149Z",
-            "cat_breed": "persian",
-            "favorite_num": "0"
+            cat_id: 1,
+            cat_name: "Dexter",
+            cat_birthday: "2024-03-24T06:07:42.149Z",
+            cat_breed: "persian",
+            favorite_num: "0"
         }
     ] as unknown as Array<Cat>,
     count: 2
